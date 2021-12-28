@@ -16,11 +16,11 @@ Provides useful general-purpose functions, macros & types as well as a home for 
   - [use](#use)
 - [Functionals](#functionals)
   - [bytes](#bytes)
-  - [negate](#negate)
-  - [isathing](#isathing)
-  - [truthy and falsy](#truthy-and-falsy)
   - [indexed](#indexed)
+  - [isathing](#isathing)
   - [iterable](#iterable)
+  - [negate](#negate)
+  - [truthy & falsy](#truthy--falsy)
 - [Functions](#functions)
   - [curry](#curry)
   - [decamelcase](#decamelcase)
@@ -37,8 +37,8 @@ Provides useful general-purpose functions, macros & types as well as a home for 
   - [@sym_str](#sym_str)
   - [@with](#with)
 - [Types](#types)
-  - [Mutable](#mutable)
   - [CancellableTask](#cancellabletask)
+  - [Mutable](#mutable)
   - [TimeoutTask](#timeouttask)
 - [Meta Types](#meta-types)
   - [Ident](#ident)
@@ -111,6 +111,15 @@ bytes([0x2A, 0x45, 0x01, 0xA4]) == [0x2A, 0x45, 0x01, 0xA4]
 
 *Note:* These examples assume little endian.
 
+## indexed
+A functional alternative to `Base.collect(coll)`. If `coll` is 1-dimensionally indexable (`getindex(coll, i)`), `coll` is returned directly. If `coll` is iterable (`iterate(coll)`), returns `collect(coll)`. Otherwise, returns `(coll,)` (1-tuple containing only `coll`).
+
+## isathing
+Simple negation of `Base.isnothing(x)`.
+
+## iterable
+Return the passed-in argument if a signature of `Base.iterate` exists for it, otherwise return an iterable type around the argument. The result of this function will always be iterable.
+
 ## negate
 Simple functional negation of a callable. Useful to shorten down callbacks rather than using lambdas.
 
@@ -127,10 +136,8 @@ isdiv3(x) = x % 3 == 0
 filter!(negate(isdiv3), [1, 2, 3, 4])
 ```
 
-## isathing
-Simple negation of `Base.isnothing(x)`.
 
-## truthy and falsy
+## truthy & falsy
 `truthy` is a functional way of evaluating the "truth" of a value - as prominent in many other languages. In general, this means at least one bit is set. `falsy` is simply `negate(truthy)`.
 
 ### Signatures
@@ -141,12 +148,6 @@ truthy(n::Number) = n != 0
 truthy(_) = true
 falsy(x) = !truthy(x)
 ```
-
-## indexed
-A functional alternative to `Base.collect(coll)`. If `coll` is 1-dimensionally indexable (`getindex(coll, i)`), `coll` is returned directly. If `coll` is iterable (`iterate(coll)`), returns `collect(coll)`. Otherwise, returns `(coll,)` (1-tuple containing only `coll`).
-
-## iterable
-Return the passed-in argument if a signature of `Base.iterate` exists for it, otherwise return an iterable type around the argument. The result of this function will always be iterable.
 
 # Functions
 Imperative general purpose functions.
@@ -387,33 +388,6 @@ it can be copied bitwise, `res1` may remain unchanged outside of `@with`.
 # Types
 General purpose and simple types.
 
-## Mutable
-A simple mutable wrapper around a single field of type `T`. The `Mutable` type comes in handy either as a way to reference variables, or to mark a single field of an otherwise immutable struct as mutable.
-
-### Signature
-```julia
-struct Mutable{T}
-  value::T
-end
-```
-
-### Example
-```julia
-using KirUtil
-
-struct Immutable
-    immutable::Int
-    mutable::Mutable{Bool}
-end
-Immutable(immutable, mutable::Bool) = Immutable(immutable, Mutable(mutable))
-
-myvar = Immutable(42, false)
-myvar.mutable[] # == false
-myvar.mutable[] = true
-myvar.mutable[] # == true
-myvar.immutable += 1 # throws
-```
-
 ## CancellableTask
 Wrapper around a `Task` object with a specialization of `KirUtil.cancel` to cancel cancel a blocking and/or yielding task prematurely. Unfortunately, these cannot be used with `@sync` and `@async`.
 
@@ -445,6 +419,34 @@ wait(task1) # throws TaskFailedException wrapping CancellationError
 fetch(task2) == 42 # success
 
 wait(task3) # throws TaskFailedException wrapping "foobar"
+```
+
+
+## Mutable
+A simple mutable wrapper around a single field of type `T`. The `Mutable` type comes in handy either as a way to reference variables, or to mark a single field of an otherwise immutable struct as mutable.
+
+### Signature
+```julia
+struct Mutable{T}
+  value::T
+end
+```
+
+### Example
+```julia
+using KirUtil
+
+struct Immutable
+    immutable::Int
+    mutable::Mutable{Bool}
+end
+Immutable(immutable, mutable::Bool) = Immutable(immutable, Mutable(mutable))
+
+myvar = Immutable(42, false)
+myvar.mutable[] # == false
+myvar.mutable[] = true
+myvar.mutable[] # == true
+myvar.immutable += 1 # throws
 ```
 
 ## TimeoutTask
