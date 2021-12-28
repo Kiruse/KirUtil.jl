@@ -4,8 +4,8 @@
 # Licensed under MIT License
 module TestCancellableTasks
 using Test
-using ExtraFun.CancellableTasks
-import ExtraFun: CancellationError, TimeoutError, cancel
+using KirUtil.CancellableTasks
+import KirUtil: CancellationError, TimeoutError, cancel
 
 function task_fails(cb, Error::Type{<:Exception})
     try

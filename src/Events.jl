@@ -3,8 +3,8 @@
 # -----
 # Licensed under MIT License
 module Events
-import ..ExtraFun
-import ExtraFun: Ident, indexof
+import ..KirUtil
+import KirUtil: Ident, indexof
 
 export @event
 macro event(fn::Expr)
@@ -33,7 +33,7 @@ macro event(fn::Expr)
     end
     push!(_static_events[event_name], listener_name)
     
-    result = :(Events.listen(::ExtraFun.Ident{$(QuoteNode(event_name))}, ::ExtraFun.Ident{$(QuoteNode(listener_name))}) = $fn_body)
+    result = :(Events.listen(::KirUtil.Ident{$(QuoteNode(event_name))}, ::KirUtil.Ident{$(QuoteNode(listener_name))}) = $fn_body)
     if params !== nothing
         insert!(result.args[1].args, 2, params)
     end

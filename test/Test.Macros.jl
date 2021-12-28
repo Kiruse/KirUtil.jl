@@ -4,7 +4,7 @@
 # Licensed under MIT License
 module TestMacros
 using Test
-using ExtraFun
+using KirUtil
 import ..Helpers: testmultiply
 
 struct Resource1
@@ -21,7 +21,7 @@ function foo(n::Integer)
     nothing
 end
 
-@testset "ExtraFun Macros" begin
+@testset "KirUtil Macros" begin
     @testset "@await" begin
         let t0 = time()
             @test @await(sleep(0.2), 42) == 42

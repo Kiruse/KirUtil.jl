@@ -4,10 +4,10 @@
 # Licensed under MIT License
 module TestFunctionals
 using Test
-using ExtraFun
+using KirUtil
 import ..Helpers: Immutable
 
-@testset "ExtraFun Functionals" begin
+@testset "KirUtil Functionals" begin
     @testset "indexed" begin
         let ary = [1, 2, 3]
             @test indexed(ary) === ary

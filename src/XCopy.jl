@@ -46,7 +46,7 @@ end
  
  See [`xcopy`](@ref), [`xcopyargs`](@ref), [`xcopy_override`](@ref)"""
 macro xcopy(T)
-    esc(:(Base.copy(tpl::$T; kwargs...) = ExtraFun.xcopy(tpl; kwargs...)))
+    esc(:(Base.copy(tpl::$T; kwargs...) = KirUtil.xcopy(tpl; kwargs...)))
 end
 
 """`xcopyargs(ArgsT::Type, tpl; kwargs...)`
@@ -75,7 +75,7 @@ end
  
  See [`xcopy`](@ref), [`xcopyargs`](@ref), [`xcopy_override`](@ref)"""
 macro xcopyargs(T, A)
-    esc(:(Base.copy(tpl::$T; kwargs...) = ExtraFun.xcopyargs(A, tpl; kwargs...)))
+    esc(:(Base.copy(tpl::$T; kwargs...) = KirUtil.xcopyargs(A, tpl; kwargs...)))
 end
 
 """`xcopy_override(tpl, ::FieldCopyOverride{S}) where S`
@@ -123,7 +123,7 @@ macro xcopy_override(T, S, expr)
     if S isa Symbol
         S = QuoteNode(S)
     end
-    esc(:(ExtraFun.xcopy_override(tpl::$T, ::ExtraFun.FieldCopyOverride{$S}) = $expr))
+    esc(:(KirUtil.xcopy_override(tpl::$T, ::KirUtil.FieldCopyOverride{$S}) = $expr))
 end
 
 """`xcopy_construct(tpl, args...; kwargs...)`

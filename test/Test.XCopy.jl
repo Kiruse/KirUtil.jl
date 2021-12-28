@@ -1,10 +1,10 @@
 ######################################################################
-# Unit Tests for ExtraFun's XCopy pattern
+# Unit Tests for KirUtil's XCopy pattern
 # -----
 # Licensed under MIT License
 module TestXCopy
 using Test
-using ExtraFun
+using KirUtil
 
 struct XCopyTest1
     counter::Int
@@ -22,7 +22,7 @@ end
 @xcopy_override XCopyTest2 :counter tpl.counter + 1
 @xcopy_override XCopyTest2 :flag true
 
-@testset "ExtraFun XCopy" begin
+@testset "KirUtil XCopy" begin
     @testset "simple" begin
         let test = XCopyTest1(1, false)
             @test (test = xcopy(test)) == XCopyTest1(1, false)

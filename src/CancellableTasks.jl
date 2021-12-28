@@ -4,8 +4,8 @@
 # -----
 # Licensed under MIT License
 module CancellableTasks
-import ..ExtraFun
-import ..ExtraFun: @await, CancellationError, TimeoutError
+import ..KirUtil
+import ..KirUtil: @await, CancellationError, TimeoutError
 
 struct CancellableTask
     wrapped::Task
@@ -21,7 +21,7 @@ end
 """`cancel(cancellable_task, reason = nothing)`
 Cancel a blocking/yielding task with a `CancellationError(reason)`. The task may intercept this error in a try ... catch
 block if necessary."""
-function ExtraFun.cancel(task::CancellableTask, reason = nothing)
+function KirUtil.cancel(task::CancellableTask, reason = nothing)
     if task.wrapped._state == 0
         schedule(task.wrapped, CancellationError(reason), error=true)
     end
@@ -63,7 +63,7 @@ function with_timeout(cb, timeout::Real; schedule_immediately::Bool = true)
     wrapper
 end
 
-function ExtraFun.cancel(task::TimeoutTask, reason = nothing)
+function KirUtil.cancel(task::TimeoutTask, reason = nothing)
     if task.task_cb._state == 0
         err = CancellationError(reason)
         schedule(task.task_cb,      err, error=true)

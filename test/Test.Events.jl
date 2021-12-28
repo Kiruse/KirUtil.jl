@@ -4,8 +4,8 @@
 # Licensed under MIT License.
 module TestEvents
 using Test
-using ExtraFun
-using ExtraFun.Events
+using KirUtil
+using KirUtil.Events
 
 
 @testset "Events" begin

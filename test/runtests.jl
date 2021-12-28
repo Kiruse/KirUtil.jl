@@ -1,9 +1,9 @@
 ######################################################################
-# ExtraFun unit tests
+# KirUtil unit tests
 # -----
 # Licensed under MIT License.
 module Helpers
-    using ExtraFun
+    using KirUtil
     
     struct Immutable
         mutable::Mutable{Int}

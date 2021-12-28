@@ -1,8 +1,8 @@
 ######################################################################
-# Extra general purpose functions & stubs
+# Kiru-flavored general purpose utilities
 # -----
 # Copyright (c) Kiruse 2021. Licensed under MIT License
-module ExtraFun
+module KirUtil
 using Reexport
 export use
 

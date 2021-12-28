@@ -1,7 +1,7 @@
-name = "ExtraFun"
+name = "KirUtil"
 uuid = "963d7961-7533-4a80-bf6b-d3653d506006"
 authors = ["Kiruse <kiruse@kiruse.dev>"]
-version = "1.8.4"
+version = "0.1.0"
 
 [deps]
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"

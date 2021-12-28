@@ -4,10 +4,10 @@
 # Licensed under MIT License
 module TestFunctions
 using Test
-using ExtraFun
+using KirUtil
 import ..Helpers: Immutable, testmultiply
 
-@testset "ExtraFun Functions" begin
+@testset "KirUtil Functions" begin
     @testset "curry" begin
         let curried = curry(testmultiply, 42, truncate=true)
             @test curried(2.1) == 88

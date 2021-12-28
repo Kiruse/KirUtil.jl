@@ -4,10 +4,10 @@
 # Licensed under MIT License
 module TestTypes
 using Test
-using ExtraFun
+using KirUtil
 import ..Helpers: Immutable
 
-@testset "ExtraFun Types" begin
+@testset "KirUtil Types" begin
     @testset "Ident" begin
         identtest(::Ident{:foo}) = 42
         identtest(::Ident{:bar}) = 69.69
@@ -73,7 +73,7 @@ import ..Helpers: Immutable
         end
         
         @testset "implicit load" begin
-            ExtraFun.load(opt::Optional{:implicit_load}) = opt.value = 42
+            KirUtil.load(opt::Optional{:implicit_load}) = opt.value = 42
             let opt = Optional{:implicit_load}()
                 @assert isunknown(opt)
                 @test opt[] == 42
@@ -82,7 +82,7 @@ import ..Helpers: Immutable
         end
         
         @testset "explicit load" begin
-            ExtraFun.load(io::IO, opt::Optional{:explicit_load, T}) where T = opt.value = read(io, T)
+            KirUtil.load(io::IO, opt::Optional{:explicit_load, T}) where T = opt.value = read(io, T)
             let buff = IOBuffer(), opt = Optional{:explicit_load, Int}()
                 write(buff, 42)
                 seek(buff, 0)

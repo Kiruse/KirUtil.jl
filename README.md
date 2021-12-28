@@ -1,10 +1,10 @@
-# ExtraFun
-Extra general purpose functions, stubs, macros & meta types.
+# KirUtil
+Kiru-flavored utilities for Julia!
 
-These functions, macros & types are either commonly used patterns, or mere stubs.
+Provides useful general-purpose functions, macros & types as well as a home for quasi-global stubs.
 
 # Table of Contents
-- [ExtraFun](#extrafun)
+- [KirUtil](#kirutil)
 - [Table of Contents](#table-of-contents)
 - [Stubs](#stubs)
   - [cancel](#cancel)
@@ -54,11 +54,11 @@ Function stubs are generically named functions without any actual body - they ar
 takes no arguments and do absolutely nothing.
 
 These stubs are meant to be complementary to the Julia standard library. Similar to overloading `Base.push!`, you would
-overload `ExtraFun.use`. Then, users of your library may simply `using ExtraFun` and call `use(<your type>)` without
-having to worry about absolutely addressing the appropriate module. ExtraFun allows for shorter function names and thus
+overload `KirUtil.use`. Then, users of your library may simply `using KirUtil` and call `use(<your type>)` without
+having to worry about absolutely addressing the appropriate module. KirUtil allows for shorter function names and thus
 ease of use.
 
-Following is an enumeration of all function stubs exported by ExtraFun, along with their respective intention. In turn,
+Following is an enumeration of all function stubs exported by KirUtil, along with their respective intention. In turn,
 these intentions are merely intended to give you an idea what to use these stubs for.
 
 ## cancel
@@ -73,7 +73,7 @@ having to fully reconstruct it, reusing previously supplied data.
 
 ## restore
 Restore the state of an object from an external resource, typically a file or an internet resource. Forms the
-complementary counterpiece to `ExtraFun.store` method.
+complementary counterpiece to `KirUtil.store` method.
 
 ## store
 Store the state of an object in an external resource, typically a file or an internet resource. Unlike the standard
@@ -300,7 +300,7 @@ split(iseven, collect(1:10)) # == ([2, 4, 6, 8, 10], [1, 3, 5, 7, 9])
 ```
 
 # Macros
-ExtraFun provides a handful of useful yet simple macros. These include:
+KirUtil provides a handful of useful yet simple macros. These include:
 
 ## @curry
 A convenience macro which curries every single first-level function call in its block expression. This is useful to call multiple functions reusing various identical arguments.
@@ -379,7 +379,7 @@ end
 
 ### Example
 ```julia
-using ExtraFun
+using KirUtil
 
 struct Immutable
     immutable::Int
@@ -395,7 +395,7 @@ myvar.immutable += 1 # throws
 ```
 
 ## CancellableTask
-Wrapper around a `Task` object with a specialization of `ExtraFun.cancel` to cancel cancel a blocking and/or yielding task prematurely. Unfortunately, these cannot be used with `@sync` and `@async`.
+Wrapper around a `Task` object with a specialization of `KirUtil.cancel` to cancel cancel a blocking and/or yielding task prematurely. Unfortunately, these cannot be used with `@sync` and `@async`.
 
 ### with_cancel
 To conveniently create such a task, the `with_cancel` method is introduced. Its signature is as follows:
@@ -407,7 +407,7 @@ with_cancel(callback, schedule_immediately::Bool = false)::CancellableTask
 
 ### Example
 ```julia
-using ExtraFun
+using KirUtil
 
 task1 = with_cancel() do
   sleep(9999)
@@ -428,7 +428,7 @@ wait(task3) # throws TaskFailedException wrapping "foobar"
 ```
 
 ## TimeoutTask
-Wrapper around a `Task` object with an automatic timeout. The timeout only affects the task if it blocks and/or yields. One can `Base.wait`, `Base.fetch`, or `ExtraFun.cancel` the task. Like a `CancellableTask`, the `CancellationError` thrown by `Base.wait` and `Base.fetch` will be wrapped by a `TaskFailedException`. Analogously, the `TimeoutError` triggered upon timing out will also be wrapped in such a `TaskFailedException`. Like `CancellableTask`, these tasks are incompatible with `@sync` and `@async`.
+Wrapper around a `Task` object with an automatic timeout. The timeout only affects the task if it blocks and/or yields. One can `Base.wait`, `Base.fetch`, or `KirUtil.cancel` the task. Like a `CancellableTask`, the `CancellationError` thrown by `Base.wait` and `Base.fetch` will be wrapped by a `TaskFailedException`. Analogously, the `TimeoutError` triggered upon timing out will also be wrapped in such a `TaskFailedException`. Like `CancellableTask`, these tasks are incompatible with `@sync` and `@async`.
 
 ### with_timeout
 To conveniently create such a task, the `with_timeout` method is introduced. Its signature is as follows:
@@ -440,7 +440,7 @@ with_timeout(callback, timeout::Real; schedule_immediately::Bool)::TimeoutTask
 
 ### Example
 ```julia
-using ExtraFun
+using KirUtil
 
 task1 = with_timeout(2) do
   sleep(3)
@@ -489,14 +489,14 @@ extract(::Ident{:bar}) = 69.69
 ```
 
 ## Optional & Unknown
-*ExtraFun* introduces an `Optional{S, T}` meta type which represents a value which theoretically exists but may or may not be loaded at the time. If the value is not loaded, the `Optional` will contain `unknown` - the only instance of `Unknown`, similar to `nothing` and `Nothing`. While `T` can be any type, `S` is a vanity parameter intended as a unique identifier for your `Optional`, allowing specialization of `Base.getindex(::Optional{S})` while retaining interoperability with other `Optional`s of other `S`.
+*KirUtil* introduces an `Optional{S, T}` meta type which represents a value which theoretically exists but may or may not be loaded at the time. If the value is not loaded, the `Optional` will contain `unknown` - the only instance of `Unknown`, similar to `nothing` and `Nothing`. While `T` can be any type, `S` is a vanity parameter intended as a unique identifier for your `Optional`, allowing specialization of `Base.getindex(::Optional{S})` while retaining interoperability with other `Optional`s of other `S`.
 
 ### Usage
 The signature of `Optional` is rather complex. Plentiful specializations of `Base.convert` allow you to use it in the most intuitive ways. Generally, the `S` identifier can be ignored; it will default to `:generic`. It is only relevant to retrieving the actual value of the `Optional` in case the current value is `unknown`.
 
-Getting and setting the value proceeds much like `Ref` through `Base.getindex` and `Base.setindex!`, or rather `opt[]` and `opt[] = value`. The default implementation of `Base.getindex` tests if the wrapped value is `unknown`. If so, it calls `ExtraFun.load(::Optional)`, caches its return value, and passes it on. The default implementation of `Base.setindex!` always overrides the value regardless. All of the above methods may be specialized on your `S` identifier.
+Getting and setting the value proceeds much like `Ref` through `Base.getindex` and `Base.setindex!`, or rather `opt[]` and `opt[] = value`. The default implementation of `Base.getindex` tests if the wrapped value is `unknown`. If so, it calls `KirUtil.load(::Optional)`, caches its return value, and passes it on. The default implementation of `Base.setindex!` always overrides the value regardless. All of the above methods may be specialized on your `S` identifier.
 
-Alternatively, you may test if an `Optional` contains `unknown` with `ExtraFun.isunknown`, and then `ExtraFun.load` it with additional arguments if necessary.
+Alternatively, you may test if an `Optional` contains `unknown` with `KirUtil.isunknown`, and then `KirUtil.load` it with additional arguments if necessary.
 
 Generally, whichever usage you imagine is probably possible. If not, drop me an issue and I'll see about implementing it!
 
@@ -530,8 +530,8 @@ Bar(Optional{:generic, Integer}(42)) # == Bar(Optional{:generic, Integer}(42))
 struct Baz
   opt::Optional{S, Float32} where S
 end
-ExtraFun.load(opt::Optional{:baz}) = opt.value = 69.69
-ExtraFun.load(io::IO, opt::Optional{:baz}) = opt.value = read(io, Float32)
+KirUtil.load(opt::Optional{:baz}) = opt.value = 69.69
+KirUtil.load(io::IO, opt::Optional{:baz}) = opt.value = read(io, Float32)
 
 Baz(42) # == Baz(Optional{:generic, Float32}(42.0f0))
 Baz(Optional{:baz, Real}(42)) # == Baz(Optional{:baz, Float32}(42.0f0))
@@ -551,7 +551,7 @@ end
 Sometimes, simply calling `load(optional)` is not enough. You may depend on additional arguments such as a file handle. In that case, manually 
 
 # XCopy
-A more complex pattern which ExtraFun provides is the `xcopy` function and macro family. These allow customizing by various degrees of depth how an object is copied.
+A more complex pattern which KirUtil provides is the `xcopy` function and macro family. These allow customizing by various degrees of depth how an object is copied.
 
 ## xcopy function
 Copies the template object, overriding the copy's fields by keyword arguments.
