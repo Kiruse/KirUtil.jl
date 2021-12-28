@@ -15,6 +15,7 @@ Provides useful general-purpose functions, macros & types as well as a home for 
   - [update!](#update)
   - [use](#use)
 - [Functionals](#functionals)
+  - [bytes](#bytes)
   - [negate](#negate)
   - [isathing](#isathing)
   - [truthy and falsy](#truthy-and-falsy)
@@ -90,6 +91,25 @@ Intended to indicate a change of state, either globally or locally to a containe
 
 # Functionals
 Following are general purpose patterns packaged in functions (and possibly corresponding types) for convenience.
+
+## bytes
+Read bytes of any arbitrary value. Uses `Base.write(::IOBuffer, x)` for broad support. Specialize directly to avoid integrating with other systems.
+
+*Note:* As it uses `Base.write`, byte order of the resulting array depends on platform endianness. Use `Base.hton` or `Base.htol` to normalize across platforms.
+
+### Signature
+```julia
+bytes(x)::Vector{UInt8}
+```
+
+### Example
+```julia
+bytes(UInt8(42)) == [0x2A]
+bytes(420) == [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xA4] # assuming Int is Int64
+bytes([0x2A, 0x45, 0x01, 0xA4]) == [0x2A, 0x45, 0x01, 0xA4]
+```
+
+*Note:* These examples assume little endian.
 
 ## negate
 Simple functional negation of a callable. Useful to shorten down callbacks rather than using lambdas.
